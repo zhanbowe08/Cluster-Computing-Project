@@ -1,0 +1,22 @@
+---
+# format and mount volumes
+- name: Make folders on /media/ to mount volume
+  become: yes
+  ansible.builtin.file:
+    path: /media/storage_59/couchdb_data/
+    mode: u+rwx
+    state: directory
+- name: Create a ext4 filesystem on /dev/vdb
+  become: yes
+  filesystem:
+    fstype: ext4
+    dev: /dev/vdb
+- name: Mount database volume on /media/storage_59
+  become: yes
+  mount:
+    path: /media/storage_59
+    src: /dev/vdb
+    fstype: ext4
+    state: mounted
+
+

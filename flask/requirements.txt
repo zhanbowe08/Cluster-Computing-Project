@@ -1,0 +1,7 @@
+couchdb
+flask
+flask-restful
+geopandas
+gunicorn
+pandas
+shapely

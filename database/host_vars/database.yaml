@@ -1,0 +1,61 @@
+# Common vars
+availability_zone: melbourne-qh2-uom
+# Ubuntu 20.04LTS
+instance_image: 356ff1ed-5960-4ac2-96a1-0c0198e6a999
+instance_key_name: database
+# 2 CPU, 9GB RAM
+instance_flavor: uom.mse.2c9g
+
+# Volume
+volumes:
+  - vol_name: database-vol-1
+    vol_size: 135
+  - vol_name: database-vol-2
+    vol_size: 135
+  - vol_name: database-vol-3
+    vol_size: 135
+
+# Security group
+security_groups:
+  - name: ssh
+    description: "Security group for SSH access"
+    protocol: tcp
+    port_range_min: 22
+    port_range_max: 22
+    remote_ip_prefix: 0.0.0.0/0
+  # Not strictly necessary but may be required in future
+  - name: http
+    description: "Security group for HTTP"
+    protocol: tcp
+    port_range_min: 80
+    port_range_max: 80
+    remote_ip_prefix: 0.0.0.0/0
+  # Couch db specific security groups: https://docs.couchdb.org/en/stable/setup/cluster.html
+  - name: couchdb-default
+    description: "Security group for default CouchDB communication"
+    protocol: tcp
+    port_range_min: 5984
+    port_range_max: 5984
+    remote_ip_prefix: 0.0.0.0/0
+  - name: couchdb-cluster-discovery
+    description: "Security group for clustered CouchDB to discover nodes (EPMD)"
+    protocol: tcp
+    port_range_min: 4369
+    port_range_max: 4369
+    remote_ip_prefix: 0.0.0.0/0
+  - name: couchdb-cluster-comms
+    description: "Security group for clustered CouchDB to communicate via Erlang"
+    protocol: tcp
+    port_range_min: 9100
+    port_range_max: 9200
+    remote_ip_prefix: 0.0.0.0/0
+
+# Instance
+instances:
+  - name: database-1
+    volumes: ['database-vol-1']
+  - name: database-2
+    volumes: ['database-vol-2']
+  - name: database-3
+    volumes: ['database-vol-3']
+

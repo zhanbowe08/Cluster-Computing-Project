@@ -1,0 +1,35 @@
+# derived from https://docs.gunicorn.org/en/stable/deploy.html
+upstream app_server {
+    # application server running on gunicorn 
+    server 127.0.0.1:8000 fail_timeout=0;
+}
+
+server {
+    listen 80;
+    server_name melbourneliveability.live www.melbourneliveability.live {{ ansible_default_ipv4["address"] }};
+    
+    # path for static files
+    root /home/ubuntu/frontend/public;
+    index index.html;
+    
+    # allow CORS
+    add_header Access-Control-Allow-Origin *;
+
+    # for single-page app routing, use index.html for all routes
+    location / {
+        try_files $uri /index.html;
+    }
+
+    # serve the api via the application server
+    location /api/ {
+        try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_pass http://app_server;
+    }
+} 

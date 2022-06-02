@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  # name of the container
+  couchdb-server:
+    # name of the image to use
+    image: couchdb
+    # <port of host (can be any unused number) : port of mongodb server (must be 27017 by default)>
+    ports:
+      - 5984:5984
+      - 9100:9100
+      - 4369:4369
+    # refer to the documentaion of image couchdb
+    environment:
+      - NODENAME=172.26.131.244
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+      - COUCHDB_SECRET=secret
+      - ERL_FLAGS="-setcookie a20b37d83ef18efce400b3ace400036k"
+    volumes:
+      # in the couchdb container, data stored in directory /opt/couchdb/data
+      - couchdb-storage:/opt/couchdb/data
+
+volumes:
+  couchdb-storage:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "/media/storage_59/couchdb_data/"

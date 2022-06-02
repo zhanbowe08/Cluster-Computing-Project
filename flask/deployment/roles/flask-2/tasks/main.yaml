@@ -1,0 +1,67 @@
+---
+# Run flask via gunicorn
+# Add a sleep to allow vm to get setup
+- name: Sleep for 20 seconds
+  wait_for:
+    timeout: 20
+- name: Install pip, neovim, nginx
+  become: yes
+  ansible.builtin.apt:
+    name: ['python3-dev', 'python3-setuptools', 'python3-pip', 'neovim', 'nginx']
+    state: latest
+    update_cache: yes
+# sudo apt-get update && sudo apt-get install python3-dev python3-setuptools python-pip
+- name: Update pip
+  ansible.builtin.pip:
+    name: ['pip']
+    state: latest
+# pip install --upgrade pip 
+- name: Create new frontend/public directory
+  ansible.builtin.file:
+    path: ~/frontend
+    state: directory
+- name: Copy, then unarchive flask files
+  ansible.builtin.unarchive:
+    src: ~/flask.tgz
+    dest: ~/
+- name: Copy, then unarchive frontend files
+  ansible.builtin.unarchive:
+    src: ~/frontend-public.tgz
+    dest: ~/frontend
+# on Ubuntu it's preferred to install gunicorn via apt rather than pip
+- name: install gunicorn
+  become: yes
+  ansible.builtin.apt:
+    name: ['gunicorn']
+    update_cache: yes
+- name: install dependencies
+  ansible.builtin.pip:
+    chdir: flask
+    requirements: requirements.txt
+- name: kill gunicorn if already running
+  command: 'pkill gunicorn'
+  register: pkill_result
+  ignore_errors: True
+- debug: var=pkill_result
+- name: run gunicorn
+  community.general.gunicorn:
+    app: 'app:app'
+    chdir: /home/ubuntu/flask
+    conf: /home/ubuntu/flask/gunicorn.conf.py
+    pid: /home/ubuntu/flask/pidfile
+- name: copy nginx config as template
+  become: yes
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/nginx.conf.j2"
+    dest: /etc/nginx/sites-available/flask.conf
+- name: create symbolic link to nginx config
+  become: yes
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/flask.conf
+    dest: /etc/nginx/sites-enabled/flask.conf
+    state: link
+- name: Restart nginx
+  become: yes
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted

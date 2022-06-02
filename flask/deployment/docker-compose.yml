@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  flask:
+    image: "sinkers/comp90024-backend"
+    ports:
+      - "8000:8000"
+      - "5984:5984"
