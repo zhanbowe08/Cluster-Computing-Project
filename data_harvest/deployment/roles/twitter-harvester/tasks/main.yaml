@@ -1,0 +1,23 @@
+---
+# run in docker container using docker-compose
+- name: Create twitter harvester directory
+  ansible.builtin.file:
+    path: ~/twitter-harvester/
+    state: directory
+- name: Copy twitter-harvester files to VM
+  ansible.builtin.copy:
+    src: ../../docker-compose.yml
+    dest: twitter-harvester/docker-compose.yml
+- name: set permissions on docker socket
+  become: yes
+  ansible.builtin.file:
+    path: /run/docker.sock
+    mode: '666'
+# https://docs.ansible.com/ansible/latest/collections/community/docker/docker_compose_module.html#ansible-collections-community-docker-docker-compose-module
+- name: Run `docker-compose up`
+  community.docker.docker_compose:
+    project_src: twitter-harvester
+    remove_orphans: yes
+  register: output
+- ansible.builtin.debug:
+    var: output

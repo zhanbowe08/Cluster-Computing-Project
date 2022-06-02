@@ -1,0 +1,6 @@
+version: "3.9"
+services:
+  twitter-search-harvester:
+    image: "liget/tweet-harvest:7day-2.0"
+  twitter-stream-harvester:
+    image: "liget/tweet-harvest:production-2.0"

@@ -1,0 +1,9 @@
+# James - full_archive (unused); 30_day (unused)
+
+API_KEY='PMeWjRgq12eXble1VdCEXymDW'
+KEY_SECRET='U2hZOczdp4BazVfHKB655cBAlx1kvTmAAKWQk1c2TbuT9KEaLD'
+ACCESS_TOKEN='2568222056-yCfhchj3IZMbc6HDnDrpu7FibJFpS9QL719OlNV'
+TOKEN_SECRET='qpxPuGWdriKT54plfHrmYGmrEtjNkl1jl8u9cV64X1a7K'
+BEAR_TOKEN='AAAAAAAAAAAAAAAAAAAAAMKTbAEAAAAAc1FnHiwmUJrUgOtVSZdTeTz4Q2A%3Dmn9JLLoh95MQgWfrBLUgFGPTwwpPyLddWmn66TkUq55v3FNpyF'
+Label_30 = '30days'
+Label_all = 'developement'
